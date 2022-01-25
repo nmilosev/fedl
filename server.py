@@ -15,6 +15,10 @@
 import flwr as fl
 
 from nus_strategy import NUS
+from mnist import MNISTNet, PytorchMNISTClient
 
 if __name__ == "__main__":
-    fl.server.start_server(config={"num_rounds": 1}, strategy=NUS())
+    model = MNISTNet()
+    weights = [val.cpu().numpy() for _, val in model.state_dict().items()]
+    server_initial_parameters = fl.common.weights_to_parameters(weights)
+    fl.server.start_server(config={"num_rounds": 1}, strategy=NUS(initial_parameters=server_initial_parameters))

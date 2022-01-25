@@ -33,12 +33,15 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from flwr.common import Parameters
+from sklearn.model_selection import train_test_split
 from torch import Tensor, optim
 from torch.optim.lr_scheduler import StepLR
-from torch.utils.data import DataLoader, Dataset, SubsetRandomSampler
+from torch.utils.data import DataLoader, Dataset, SubsetRandomSampler, Subset
 from torchvision import datasets, transforms
 
 import flwr as fl
+import flwr.common
 
 
 
@@ -143,6 +146,11 @@ def load_data(
         data_root, train=True, download=True, transform=transform
     )
     test_dataset = datasets.MNIST(data_root, train=False, transform=transform)
+
+    # TODO: for testing only take 100 samples
+    train_indices, test_indices = np.arange(0, 50), np.arange(50, 100)
+    train_dataset = Subset(train_dataset, train_indices)
+    test_dataset = Subset(test_dataset, test_indices)
 
     # Create partitioned datasets based on the total number of clients and client_id
     train_loader = dataset_partitioner(
@@ -336,6 +344,7 @@ class PytorchMNISTClient(fl.client.Client):
         test_loader: datasets,
         epochs: int,
         device: torch.device = torch.device("cpu"),
+        train_batch_size: int = 0
     ) -> None:
         self.model = MNISTNet().to(device)
         self.cid = cid
@@ -343,6 +352,7 @@ class PytorchMNISTClient(fl.client.Client):
         self.test_loader = test_loader
         self.device = device
         self.epochs = epochs
+        self.train_batch_size = train_batch_size
 
     def get_weights(self) -> fl.common.Weights:
         """Get model weights as a list of NumPy ndarrays."""
@@ -375,6 +385,27 @@ class PytorchMNISTClient(fl.client.Client):
         parameters = fl.common.weights_to_parameters(weights)
         return fl.common.ParametersRes(parameters=parameters)
 
+    def model_gradient_norm(self):
+        total_norm = 0
+        parameters = [p for p in self.model.parameters() if p.grad is not None and p.requires_grad]
+        for p in parameters:
+            param_norm = p.grad.detach().data.norm(2)
+            total_norm += param_norm.item() ** 2
+        total_norm = total_norm ** 0.5
+        return total_norm
+
+    def compare_model_gradient_norms(self, older_model):
+        current = self.get_weights()
+        old = fl.common.parameters_to_weights(older_model.parameters)
+
+        mse = 0.
+
+        for (layer_new, layer_old) in zip(current, old):
+            mse += torch.nn.functional.mse_loss(torch.tensor(layer_new),
+                                                torch.tensor(layer_old))
+
+        return float(mse)
+
     def fit(self, ins: fl.common.FitIns) -> fl.common.FitRes:
         """Trains the model on local dataset
 
@@ -406,13 +437,28 @@ class PytorchMNISTClient(fl.client.Client):
 
         # Return the refined weights and the number of examples used for training
         weights_prime: fl.common.Weights = self.get_weights()
-        params_prime = fl.common.weights_to_parameters(weights_prime)
+        if ins.config["should_send_params"]:
+            params_prime = fl.common.weights_to_parameters(weights_prime) # only return if server says so
+        else:
+            params_prime = fl.common.weights_to_parameters([np.array(0)])
         fit_duration = timeit.default_timer() - fit_begin
         return fl.common.FitRes(
             parameters=params_prime,
             num_examples=num_examples_train,
             num_examples_ceil=num_examples_train,
             fit_duration=fit_duration,
+            metrics={"batch_size": self.train_batch_size,
+                     "model_diff": self.compare_model_gradient_norms(ins),
+                     "gradient_norm": self.model_gradient_norm()}
+
+            # TODO:
+            # Server mora slati globalni apdejt OK
+            # Svako racuna lokalni gradijent na osnovu svojih podataka OK
+            # Ovde slati samo normu server
+            # Server resava 17 i bira ko treba da posalje ceo gradijent
+            # Averaging i idemo na pocetak ponovo
+
+            # Sigma za sada konstanta, razmisliti da li može eksperimentalno sa treniranim modelom da se utvrdi sigma za podskup podataka
         )
 
     def evaluate(self, ins: fl.common.EvaluateIns) -> fl.common.EvaluateRes:

@@ -23,6 +23,7 @@ from time import sleep
 from datetime import datetime
 from typing import Callable, Dict, List, Optional, Tuple
 
+import numpy as np
 import torch
 from flwr.common import (
     EvaluateIns,
@@ -65,9 +66,9 @@ class NUS(Strategy):
             self,
             fraction_fit: float = 1,
             fraction_eval: float = 1,
-            min_fit_clients: int = 5,
-            min_eval_clients: int = 3,
-            min_available_clients: int = 5,
+            min_fit_clients: int = 2,
+            min_eval_clients: int = 2,
+            min_available_clients: int = 2,
             eval_fn: Optional[
                 Callable[[Weights], Optional[Tuple[float, Dict[str, Scalar]]]]
             ] = None,
@@ -76,9 +77,7 @@ class NUS(Strategy):
             accept_failures: bool = True,
             initial_parameters: Optional[Parameters] = None,
     ) -> None:
-        """Federated Averaging strategy.
-
-        Implementation based on https://arxiv.org/abs/1602.05629
+        """Non-uniform Strategy init.
 
         Parameters
         ----------
@@ -136,8 +135,6 @@ class NUS(Strategy):
     ) -> Optional[Parameters]:
         """Initialize global model parameters."""
 
-        # TODO take from the one with largest N
-
         # setting up polling thread
         threading.Thread(
             name="poll_clients",
@@ -177,7 +174,8 @@ class NUS(Strategy):
         if self.on_fit_config_fn is not None:
             # Custom fit config function provided
             config = self.on_fit_config_fn(rnd)
-        fit_ins = FitIns(parameters, config)
+
+        config["should_send_params"] = False
 
         # Sample clients
         sample_size, min_num_clients = self.num_fit_clients(
@@ -187,8 +185,15 @@ class NUS(Strategy):
             num_clients=sample_size, min_num_clients=min_num_clients
         )
 
+        # modify client configs
+        client_configuration = [(client, FitIns(parameters, config)) for client in clients]
+
+        for client, fitins in client_configuration:
+            if True: # TODO
+                fitins.config["should_send_params"] = True
+
         # Return client/config pairs
-        return [(client, fit_ins) for client in clients]
+        return client_configuration
 
     def configure_evaluate(
             self, rnd: int, parameters: Parameters, client_manager: ClientManager
@@ -206,7 +211,7 @@ class NUS(Strategy):
             config = self.on_evaluate_config_fn(rnd)
         evaluate_ins = EvaluateIns(parameters, config)
 
-        # Sample clients
+        # Sample/Choose clients
         if rnd >= 0:
             sample_size, min_num_clients = self.num_evaluation_clients(
                 client_manager.num_available()
@@ -240,15 +245,25 @@ class NUS(Strategy):
 
         for client, fit_res in results:
             S_i = 1 / 10 * fit_res.num_examples
+            # TODO Leave as constant for now
+            # sigma_i = 8
+            # TODO: Leave constant, or parametrize (batch_size / constant)
+            # K_i = fit_res.num_examples
+            # K_i = fit_res.metrics['train_batch_size'] / 4
+
             q_i = 1 / S_i
             q[client] = q_i
 
         for client, fit_res in results:
+            # TODO check if need to apply L17 to this:
+            if fit_res.parameters == [np.array(0)]:
+                print(f"Skipping update from client {client.cid} because of missing params")
+                continue  # this client skipped sending updates
             q_i = q[client]
             if torch.bernoulli(torch.tensor(q_i)) == 1:
                 weights_results.append((parameters_to_weights(fit_res.parameters), fit_res.num_examples))
             else:
-                print(f"Skipping update from client {client.cid}")
+                print(f"Skipping update from client {client.cid} because of q_i bernoulli")
 
         if not weights_results:
             return None, {}
