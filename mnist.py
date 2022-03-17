@@ -148,10 +148,10 @@ def load_data(
     )
     test_dataset = datasets.MNIST(data_root, train=False, transform=transform)
 
-    # TODO: for testing only take 1000 samples
-    train_indices, test_indices = np.arange(0, 500), np.arange(500, 1000)
-    train_dataset = Subset(train_dataset, train_indices)
-    test_dataset = Subset(test_dataset, test_indices)
+    # for testing only take 1000 samples
+    # train_indices, test_indices = np.arange(0, 500), np.arange(500, 1000)
+    # train_dataset = Subset(train_dataset, train_indices)
+    # test_dataset = Subset(test_dataset, test_indices)
 
     # Create partitioned datasets based on the total number of clients and client_id
     train_loader = dataset_partitioner(
@@ -248,8 +248,8 @@ def train(
 
     """
     model.train()
-    optimizer = optim.Adadelta(model.parameters(), lr=1.0)
-    scheduler = StepLR(optimizer, step_size=1, gamma=0.7)
+    optimizer = optim.Adadelta(model.parameters(), lr=1e-3)
+    # scheduler = StepLR(optimizer, step_size=1, gamma=0.7)
     print(f"Training {epochs} epoch(s) w/ {len(train_loader)} mini-batches each")
     for epoch in range(epochs):  # loop over the dataset multiple times
         print()
@@ -285,7 +285,7 @@ def train(
                     end="\r",
                     flush=True,
                 )
-        scheduler.step()
+        # scheduler.step()
     return num_examples_train
 
 
@@ -372,9 +372,8 @@ class PytorchMNISTClient(fl.client.Client):
         -------
 
         """
-        # print("weights", weights)
-        if weights == np.array([0.]):
-            return # skip update, we didn't get weights
+        if len(weights) == 1:
+             return # skip update, we didn't get weights
         state_dict = OrderedDict(
             {
                 k: torch.Tensor(v)
@@ -441,14 +440,18 @@ class PytorchMNISTClient(fl.client.Client):
 
         # Return the refined weights and the number of examples used for training
         weights_prime: fl.common.Weights = self.get_weights()
-        print(ins.config["should_send_params"])
-        if ins.config["should_send_params"]:
-            params_prime = fl.common.weights_to_parameters(weights_prime) # only return if server says so
+        if "should_send_params" in ins.config: # whether to use NUS
+            print("Client", self.cid, "should_send_params:", ins.config["should_send_params"], "\n")
+            if ins.config["should_send_params"]:
+                params_prime = fl.common.weights_to_parameters(weights_prime) # only return if server says so
+            else:
+                params_prime = fl.common.weights_to_parameters(np.array([0.]))
         else:
-            print("return 0")
-            params_prime = fl.common.weights_to_parameters(np.array([0.]))
+            params_prime = fl.common.weights_to_parameters(weights_prime)
+        
         fit_duration = timeit.default_timer() - fit_begin
-        print("Client", self.cid, "returning params_prime of size", sys.getsizeof(params_prime.tensors), len(params_prime.tensors), sum(sys.getsizeof(t) for t in params_prime.tensors))
+        message_size =  sum(sys.getsizeof(t) for t in params_prime.tensors)
+        print("\n Client", self.cid, "returning params_prime of size", message_size, " \n")
         return fl.common.FitRes(
             parameters=params_prime,
             num_examples=num_examples_train,

@@ -1,0 +1,61 @@
+INFO flower 2022-03-17 18:30:55,699 | app.py:77 | Flower server running (insecure, 5 rounds)
+INFO flower 2022-03-17 18:30:55,699 | server.py:118 | Initializing global parameters
+INFO flower 2022-03-17 18:30:55,700 | server.py:300 | Using initial parameters provided by strategy
+INFO flower 2022-03-17 18:30:55,700 | server.py:120 | Evaluating initial parameters
+INFO flower 2022-03-17 18:30:55,700 | server.py:133 | FL starting
+client config for this round
+ipv6:[::1]:52756 -> {'should_send_params': True}
+ipv6:[::1]:52758 -> {'should_send_params': True}
+ipv6:[::1]:52750 -> {'should_send_params': True}
+ipv6:[::1]:52752 -> {'should_send_params': True}
+ipv6:[::1]:52754 -> {'should_send_params': True}
+DEBUG flower 2022-03-17 18:30:59,947 | server.py:251 | fit_round: strategy sampled 5 clients (out of 5)
+DEBUG flower 2022-03-17 18:35:48,288 | server.py:260 | fit_round received 5 results and 0 failures
+DEBUG flower 2022-03-17 18:35:48,323 | server.py:201 | evaluate_round: strategy sampled 5 clients (out of 5)
+DEBUG flower 2022-03-17 18:35:54,605 | server.py:210 | evaluate_round received 5 results and 0 failures
+client config for this round
+ipv6:[::1]:52752 -> {'should_send_params': False}
+ipv6:[::1]:52756 -> {'should_send_params': False}
+ipv6:[::1]:52750 -> {'should_send_params': False}
+ipv6:[::1]:52758 -> {'should_send_params': True}
+ipv6:[::1]:52754 -> {'should_send_params': True}
+DEBUG flower 2022-03-17 18:35:54,605 | server.py:251 | fit_round: strategy sampled 5 clients (out of 5)
+DEBUG flower 2022-03-17 18:40:29,679 | server.py:260 | fit_round received 5 results and 0 failures
+DEBUG flower 2022-03-17 18:40:29,689 | server.py:201 | evaluate_round: strategy sampled 5 clients (out of 5)
+DEBUG flower 2022-03-17 18:40:36,027 | server.py:210 | evaluate_round received 5 results and 0 failures
+client config for this round
+ipv6:[::1]:52752 -> {'should_send_params': False}
+ipv6:[::1]:52754 -> {'should_send_params': True}
+ipv6:[::1]:52750 -> {'should_send_params': True}
+ipv6:[::1]:52756 -> {'should_send_params': False}
+ipv6:[::1]:52758 -> {'should_send_params': True}
+DEBUG flower 2022-03-17 18:40:36,027 | server.py:251 | fit_round: strategy sampled 5 clients (out of 5)
+DEBUG flower 2022-03-17 18:45:14,964 | server.py:260 | fit_round received 5 results and 0 failures
+DEBUG flower 2022-03-17 18:45:14,981 | server.py:201 | evaluate_round: strategy sampled 5 clients (out of 5)
+DEBUG flower 2022-03-17 18:45:21,176 | server.py:210 | evaluate_round received 5 results and 0 failures
+client config for this round
+ipv6:[::1]:52756 -> {'should_send_params': False}
+ipv6:[::1]:52758 -> {'should_send_params': True}
+ipv6:[::1]:52752 -> {'should_send_params': True}
+ipv6:[::1]:52754 -> {'should_send_params': True}
+ipv6:[::1]:52750 -> {'should_send_params': False}
+DEBUG flower 2022-03-17 18:45:21,176 | server.py:251 | fit_round: strategy sampled 5 clients (out of 5)
+DEBUG flower 2022-03-17 18:49:56,221 | server.py:260 | fit_round received 5 results and 0 failures
+DEBUG flower 2022-03-17 18:49:56,236 | server.py:201 | evaluate_round: strategy sampled 5 clients (out of 5)
+DEBUG flower 2022-03-17 18:50:02,639 | server.py:210 | evaluate_round received 5 results and 0 failures
+client config for this round
+ipv6:[::1]:52750 -> {'should_send_params': False}
+ipv6:[::1]:52752 -> {'should_send_params': True}
+ipv6:[::1]:52756 -> {'should_send_params': False}
+ipv6:[::1]:52754 -> {'should_send_params': True}
+ipv6:[::1]:52758 -> {'should_send_params': True}
+DEBUG flower 2022-03-17 18:50:02,639 | server.py:251 | fit_round: strategy sampled 5 clients (out of 5)
+DEBUG flower 2022-03-17 18:54:36,056 | server.py:260 | fit_round received 5 results and 0 failures
+DEBUG flower 2022-03-17 18:54:36,071 | server.py:201 | evaluate_round: strategy sampled 5 clients (out of 5)
+DEBUG flower 2022-03-17 18:54:42,477 | server.py:210 | evaluate_round received 5 results and 0 failures
+INFO flower 2022-03-17 18:54:42,477 | server.py:172 | FL finished in 1426.7770392240018
+INFO flower 2022-03-17 18:54:42,477 | app.py:119 | app_fit: losses_distributed [(1, 0.9635845506548881), (2, 0.7114113604307175), (3, 0.6137275915205479), (4, 0.5588771002292633), (5, 0.5215597715616226)]
+INFO flower 2022-03-17 18:54:42,477 | app.py:120 | app_fit: metrics_distributed {}
+INFO flower 2022-03-17 18:54:42,477 | app.py:121 | app_fit: losses_centralized []
+INFO flower 2022-03-17 18:54:42,477 | app.py:122 | app_fit: metrics_centralized {}
+

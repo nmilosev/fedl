@@ -1,0 +1,401 @@
+Starting 5 clients.
+Starting client(cid=0) with partition 0 out of 5 clients.
+Starting client(cid=1) with partition 1 out of 5 clients.
+Starting client(cid=2) with partition 2 out of 5 clients.
+Starting client(cid=3) with partition 3 out of 5 clients.
+Starting client(cid=4) with partition 4 out of 5 clients.
+Started 5 clients.
+Client CID: 4
+Client CID: 3
+Client CID: 0
+Client CID: 1
+[28016 28321 47294 53184]
+Client CID: 2
+[28016 28321 47294 53184]
+[1344 3713 4197 4708]
+[28016 28321 47294 53184]
+[1344 3713 4197 4708]
+[28016 28321 47294 53184]
+[1344 3713 4197 4708]
+DEBUG flower 2022-03-17 18:30:59,914 | connection.py:36 | ChannelConnectivity.IDLE
+DEBUG flower 2022-03-17 18:30:59,915 | connection.py:36 | ChannelConnectivity.CONNECTING
+INFO flower 2022-03-17 18:30:59,915 | app.py:61 | Opened (insecure) gRPC connection
+DEBUG flower 2022-03-17 18:30:59,915 | connection.py:36 | ChannelConnectivity.READY
+[1344 3713 4197 4708]
+DEBUG flower 2022-03-17 18:30:59,921 | connection.py:36 | ChannelConnectivity.IDLE
+DEBUG flower 2022-03-17 18:30:59,921 | connection.py:36 | ChannelConnectivity.CONNECTING
+DEBUG flower 2022-03-17 18:30:59,921 | connection.py:36 | ChannelConnectivity.READY
+INFO flower 2022-03-17 18:30:59,922 | app.py:61 | Opened (insecure) gRPC connection
+DEBUG flower 2022-03-17 18:30:59,924 | connection.py:36 | ChannelConnectivity.IDLE
+[28016 28321 47294 53184]
+DEBUG flower 2022-03-17 18:30:59,924 | connection.py:36 | ChannelConnectivity.CONNECTING
+DEBUG flower 2022-03-17 18:30:59,925 | connection.py:36 | ChannelConnectivity.READY
+INFO flower 2022-03-17 18:30:59,925 | app.py:61 | Opened (insecure) gRPC connection
+[1344 3713 4197 4708]
+DEBUG flower 2022-03-17 18:30:59,933 | connection.py:36 | ChannelConnectivity.IDLE
+INFO flower 2022-03-17 18:30:59,933 | app.py:61 | Opened (insecure) gRPC connection
+DEBUG flower 2022-03-17 18:30:59,933 | connection.py:36 | ChannelConnectivity.CONNECTING
+DEBUG flower 2022-03-17 18:30:59,934 | connection.py:36 | ChannelConnectivity.READY
+DEBUG flower 2022-03-17 18:30:59,946 | connection.py:36 | ChannelConnectivity.IDLE
+INFO flower 2022-03-17 18:30:59,947 | app.py:61 | Opened (insecure) gRPC connection
+DEBUG flower 2022-03-17 18:30:59,947 | connection.py:36 | ChannelConnectivity.READY
+Training 5 epoch(s) w/ 5 mini-batches each
+
+Training 5 epoch(s) w/ 297 mini-batches each
+
+Training 5 epoch(s) w/ 93 mini-batches each
+
+Training 5 epoch(s) w/ 107 mini-batches each
+
+Training 5 epoch(s) w/ 438 mini-batches each
+
+
+[client 3] Train Epoch: 0 [576/5952 (10%)] Loss: 2.288001
+
+[client 4] Train Epoch: 0 [1216/6848 (18%)] Loss: 2.291030
+Client 1 should_send_params: True 032 (4%)] Loss: 2.288802
+
+returning params normally
+
+ Client 1 returning params_prime of size 4800816
+
+[client 3] Train Epoch: 0 [5696/5952 (96%)] Loss: 2.2508959
+[client 3] Train Epoch: 1 [576/5952 (10%)] Loss: 2.25815059
+[client 4] Train Epoch: 1 [5056/6848 (74%)] Loss: 2.20700815
+[client 0] Train Epoch: 0 [13376/28032 (48%)] Loss: 2.203743
+[client 0] Train Epoch: 0 [17856/28032 (64%)] Loss: 2.152559
+[client 4] Train Epoch: 2 [5056/6848 (74%)] Loss: 2.16773786
+[client 2] Train Epoch: 1 [1216/19008 (6%)] Loss: 2.09516026
+[client 2] Train Epoch: 1 [5056/19008 (27%)] Loss: 2.0981344
+[client 3] Train Epoch: 4 [3136/5952 (53%)] Loss: 2.08518285
+[client 2] Train Epoch: 1 [8896/19008 (47%)] Loss: 2.0358698
+Client 3 should_send_params: True 9008 (57%)] Loss: 2.007672
+
+returning params normally
+
+ Client 3 returning params_prime of size 4800816
+
+Client 4 should_send_params: True 9008 (77%)] Loss: 1.966395
+
+returning params normally
+
+ Client 4 returning params_prime of size 4800816
+
+[client 0] Train Epoch: 1 [10176/28032 (36%)] Loss: 1.810593
+[client 2] Train Epoch: 2 [17216/19008 (91%)] Loss: 1.587428
+[client 0] Train Epoch: 2 [1216/28032 (4%)] Loss: 1.51327913
+[client 0] Train Epoch: 2 [20416/28032 (73%)] Loss: 1.355160
+[client 0] Train Epoch: 2 [27456/28032 (98%)] Loss: 1.274011
+Client 2 should_send_params: True 8032 (43%)] Loss: 0.950928
+
+returning params normally
+
+ Client 2 returning params_prime of size 4800816
+
+[client 0] Train Epoch: 3 [27456/28032 (98%)] Loss: 1.073524
+Client 0 should_send_params: True 8032 (98%)] Loss: 0.906116
+
+returning params normally
+
+ Client 0 returning params_prime of size 4800816
+
+Client 2 - Evaluate on 484 samples: Average loss: 1.0064, Accuracy: 82.44%
+
+Client 3 - Evaluate on 511 samples: Average loss: 0.9906, Accuracy: 79.84%
+
+Client 0 - Evaluate on 1344 samples: Average loss: 0.9614, Accuracy: 84.38%
+
+Client 1 - Evaluate on 2369 samples: Average loss: 0.9588, Accuracy: 84.38%
+
+Client 4 - Evaluate on 5292 samples: Average loss: 0.9598, Accuracy: 84.30%
+
+Training 5 epoch(s) w/ 93 mini-batches each
+
+Training 5 epoch(s) w/ 107 mini-batches each
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+Training 5 epoch(s) w/ 438 mini-batches each
+
+Training 5 epoch(s) w/ 297 mini-batches each
+
+
+[client 2] Train Epoch: 0 [576/19008 (3%)] Loss: 0.992970
+[client 3] Train Epoch: 0 [576/5952 (10%)] Loss: 1.153389
+[client 0] Train Epoch: 0 [1216/28032 (4%)] Loss: 1.032921
+Client 1 should_send_params: False 2 (20%)] Loss: 1.162884
+
+returnning 0 params
+
+ Client 1 returning params_prime of size 169
+
+[client 4] Train Epoch: 0 [5696/6848 (83%)] Loss: 0.9394070
+[client 3] Train Epoch: 1 [576/5952 (10%)] Loss: 1.14106210
+[client 4] Train Epoch: 1 [5056/6848 (74%)] Loss: 1.05950654
+[client 0] Train Epoch: 0 [13376/28032 (48%)] Loss: 0.904030
+[client 0] Train Epoch: 0 [17856/28032 (64%)] Loss: 0.832198
+[client 4] Train Epoch: 2 [5056/6848 (74%)] Loss: 0.84330336
+[client 2] Train Epoch: 1 [1216/19008 (6%)] Loss: 0.99206467
+[client 3] Train Epoch: 3 [5696/5952 (96%)] Loss: 0.92795017
+[client 3] Train Epoch: 4 [3136/5952 (53%)] Loss: 0.92258248
+[client 3] Train Epoch: 4 [3776/5952 (63%)] Loss: 1.09879154
+Client 3 should_send_params: False 32 (7%)] Loss: 1.07460684
+
+returnning 0 params
+
+ Client 3 returning params_prime of size 169
+
+Client 4 should_send_params: False 32 (20%)] Loss: 0.8339443
+
+returnning 0 params
+
+ Client 4 returning params_prime of size 169
+
+[client 0] Train Epoch: 1 [10176/28032 (36%)] Loss: 1.001334
+[client 2] Train Epoch: 2 [15936/19008 (84%)] Loss: 0.752988
+[client 0] Train Epoch: 2 [2496/28032 (9%)] Loss: 0.71005268
+[client 2] Train Epoch: 3 [18496/19008 (97%)] Loss: 0.877067
+[client 2] Train Epoch: 4 [5056/19008 (27%)] Loss: 0.7899570
+Client 2 should_send_params: True 9008 (97%)] Loss: 0.697892
+
+returning params normally
+
+ Client 2 returning params_prime of size 4800816
+
+[client 0] Train Epoch: 3 [27456/28032 (98%)] Loss: 0.674628
+Client 0 should_send_params: True 8032 (98%)] Loss: 0.697062
+
+returning params normally
+
+ Client 0 returning params_prime of size 4800816
+
+Client 2 - Evaluate on 484 samples: Average loss: 0.5571, Accuracy: 84.71%
+
+Client 3 - Evaluate on 511 samples: Average loss: 0.7654, Accuracy: 80.82%
+
+Client 0 - Evaluate on 1344 samples: Average loss: 0.4206, Accuracy: 88.91%
+
+Client 1 - Evaluate on 2369 samples: Average loss: 0.9414, Accuracy: 84.68%
+
+Client 4 - Evaluate on 5292 samples: Average loss: 0.6912, Accuracy: 85.96%
+
+Training 5 epoch(s) w/ 93 mini-batches each
+
+Training 5 epoch(s) w/ 107 mini-batches each
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+Training 5 epoch(s) w/ 297 mini-batches each
+
+Training 5 epoch(s) w/ 438 mini-batches each
+
+
+[client 0] Train Epoch: 0 [576/28032 (2%)] Loss: 0.761653
+
+
+Client 1 should_send_params: False 2 (20%)] Loss: 0.857197
+
+returnning 0 params
+
+ Client 1 returning params_prime of size 169
+
+[client 3] Train Epoch: 0 [5696/5952 (96%)] Loss: 1.0385614
+[client 3] Train Epoch: 1 [576/5952 (10%)] Loss: 0.76186431
+[client 3] Train Epoch: 1 [5696/5952 (96%)] Loss: 0.90701418
+[client 0] Train Epoch: 0 [13376/28032 (48%)] Loss: 0.587358
+[client 0] Train Epoch: 0 [18496/28032 (66%)] Loss: 0.645028
+[client 4] Train Epoch: 2 [5056/6848 (74%)] Loss: 0.796052
+[client 0] Train Epoch: 0 [20416/28032 (73%)] Loss: 0.569661
+[client 0] Train Epoch: 0 [24896/28032 (89%)] Loss: 0.744616
+[client 3] Train Epoch: 4 [1856/5952 (31%)] Loss: 0.69845717
+[client 2] Train Epoch: 1 [8896/19008 (47%)] Loss: 0.8326096
+Client 3 should_send_params: False 2 (96%)] Loss: 0.84220714
+
+returnning 0 params
+
+ Client 3 returning params_prime of size 169
+
+Client 4 should_send_params: True 032 (20%)] Loss: 0.6972249
+
+returning params normally
+
+ Client 4 returning params_prime of size 4800816
+
+[client 0] Train Epoch: 1 [9536/28032 (34%)] Loss: 0.5008604
+[client 2] Train Epoch: 2 [17856/19008 (94%)] Loss: 0.613561
+[client 0] Train Epoch: 2 [576/28032 (2%)] Loss: 0.566925575
+[client 2] Train Epoch: 3 [18496/19008 (97%)] Loss: 0.746131
+[client 2] Train Epoch: 4 [8256/19008 (43%)] Loss: 0.5243294
+Client 2 should_send_params: True 8032 (36%)] Loss: 0.797384
+
+returning params normally
+
+ Client 2 returning params_prime of size 4800816
+
+[client 0] Train Epoch: 3 [27456/28032 (98%)] Loss: 0.444343
+Client 0 should_send_params: True 8032 (98%)] Loss: 0.459576
+
+returning params normally
+
+ Client 0 returning params_prime of size 4800816
+
+Client 2 - Evaluate on 484 samples: Average loss: 0.4512, Accuracy: 86.57%
+
+Client 3 - Evaluate on 511 samples: Average loss: 0.6389, Accuracy: 82.97%
+
+Client 0 - Evaluate on 1344 samples: Average loss: 0.3215, Accuracy: 91.74%
+
+Client 1 - Evaluate on 2369 samples: Average loss: 0.9254, Accuracy: 84.68%
+
+Client 4 - Evaluate on 5292 samples: Average loss: 0.5609, Accuracy: 87.24%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+Training 5 epoch(s) w/ 297 mini-batches each
+
+Training 5 epoch(s) w/ 438 mini-batches each
+
+Training 5 epoch(s) w/ 93 mini-batches each
+
+Training 5 epoch(s) w/ 107 mini-batches each
+
+
+[client 3] Train Epoch: 0 [576/5952 (10%)] Loss: 0.843540
+
+[client 0] Train Epoch: 0 [1216/28032 (4%)] Loss: 0.438152
+Client 1 should_send_params: False
+
+returnning 0 params
+
+ Client 1 returning params_prime of size 169
+
+[client 4] Train Epoch: 0 [6336/6848 (93%)] Loss: 0.7069438
+[client 0] Train Epoch: 0 [6336/28032 (23%)] Loss: 0.349590
+[client 3] Train Epoch: 1 [5696/5952 (96%)] Loss: 0.58569495
+[client 0] Train Epoch: 0 [13376/28032 (48%)] Loss: 0.581755
+[client 3] Train Epoch: 2 [5696/5952 (96%)] Loss: 0.66120492
+[client 4] Train Epoch: 2 [5056/6848 (74%)] Loss: 0.69601923
+[client 3] Train Epoch: 3 [1856/5952 (31%)] Loss: 0.91164132
+[client 2] Train Epoch: 1 [5696/19008 (30%)] Loss: 0.4604076
+[client 3] Train Epoch: 4 [2496/5952 (42%)] Loss: 0.70843694
+[client 2] Train Epoch: 1 [9536/19008 (50%)] Loss: 0.4157850
+Client 3 should_send_params: True 52 (96%)] Loss: 0.62908359
+
+returning params normally
+
+ Client 3 returning params_prime of size 4800816
+
+Client 4 should_send_params: False 008 (80%)] Loss: 0.692117
+
+returnning 0 params
+
+ Client 4 returning params_prime of size 169
+
+[client 2] Train Epoch: 1 [18496/19008 (97%)] Loss: 0.541624
+[client 2] Train Epoch: 2 [18496/19008 (97%)] Loss: 0.531358
+
+[client 0] Train Epoch: 2 [19136/28032 (68%)] Loss: 0.386607
+[client 2] Train Epoch: 4 [8896/19008 (47%)] Loss: 0.5146244
+Client 2 should_send_params: True 032 (34%)] Loss: 0.4633934
+
+returning params normally
+
+ Client 2 returning params_prime of size 4800816
+
+[client 0] Train Epoch: 3 [27456/28032 (98%)] Loss: 0.430307
+Client 0 should_send_params: True 8032 (98%)] Loss: 0.403944
+
+returning params normally
+
+ Client 0 returning params_prime of size 4800816
+
+Client 2 - Evaluate on 484 samples: Average loss: 0.3972, Accuracy: 88.02%
+
+Client 3 - Evaluate on 511 samples: Average loss: 0.5635, Accuracy: 84.74%
+
+Client 0 - Evaluate on 1344 samples: Average loss: 0.2742, Accuracy: 92.86%
+
+Client 1 - Evaluate on 2369 samples: Average loss: 0.9122, Accuracy: 84.85%
+
+Client 4 - Evaluate on 5292 samples: Average loss: 0.4873, Accuracy: 88.51%
+
+Training 5 epoch(s) w/ 107 mini-batches each
+
+Training 5 epoch(s) w/ 93 mini-batches each
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+Training 5 epoch(s) w/ 438 mini-batches each
+
+Training 5 epoch(s) w/ 297 mini-batches each
+
+
+[client 0] Train Epoch: 0 [576/28032 (2%)] Loss: 0.411407
+
+
+Client 1 should_send_params: False 32 (4%)] Loss: 0.385362
+
+returnning 0 params
+
+ Client 1 returning params_prime of size 169
+
+[client 3] Train Epoch: 0 [5696/5952 (96%)] Loss: 0.6140442
+[client 0] Train Epoch: 0 [6336/28032 (23%)] Loss: 0.436696
+[client 0] Train Epoch: 0 [12096/28032 (43%)] Loss: 0.215857
+[client 2] Train Epoch: 0 [13376/19008 (70%)] Loss: 0.342810
+[client 3] Train Epoch: 2 [5696/5952 (96%)] Loss: 0.57552549
+[client 3] Train Epoch: 3 [576/5952 (10%)] Loss: 0.632069414
+[client 3] Train Epoch: 3 [1856/5952 (31%)] Loss: 0.52669601
+[client 2] Train Epoch: 1 [5056/19008 (27%)] Loss: 0.4142718
+[client 3] Train Epoch: 4 [2496/5952 (42%)] Loss: 0.66738046
+[client 4] Train Epoch: 4 [576/6848 (8%)] Loss: 0.5419848563
+Client 3 should_send_params: True 032 (9%)] Loss: 0.61526094
+
+returning params normally
+
+ Client 3 returning params_prime of size 4800816
+
+Client 4 should_send_params: False 008 (74%)] Loss: 0.350184
+
+returnning 0 params
+
+ Client 4 returning params_prime of size 169
+
+[client 0] Train Epoch: 1 [10816/28032 (39%)] Loss: 0.251175
+[client 2] Train Epoch: 2 [15936/19008 (84%)] Loss: 0.806538
+[client 2] Train Epoch: 2 [18496/19008 (97%)] Loss: 0.683647
+[client 2] Train Epoch: 3 [18496/19008 (97%)] Loss: 0.464725
+[client 2] Train Epoch: 4 [5696/19008 (30%)] Loss: 0.4236717
+Client 2 should_send_params: True 8032 (45%)] Loss: 0.406306
+
+returning params normally
+
+ Client 2 returning params_prime of size 4800816
+
+[client 0] Train Epoch: 3 [27456/28032 (98%)] Loss: 0.565286
+Client 0 should_send_params: True 8032 (98%)] Loss: 0.261930
+
+returning params normally
+
+ Client 0 returning params_prime of size 4800816
+
+Client 2 - Evaluate on 484 samples: Average loss: 0.3660, Accuracy: 89.67%
+
+Client 3 - Evaluate on 511 samples: Average loss: 0.5133, Accuracy: 84.93%
+
+Client 0 - Evaluate on 1344 samples: Average loss: 0.2440, Accuracy: 93.01%
+
+Client 1 - Evaluate on 2369 samples: Average loss: 0.8982, Accuracy: 84.80%
+
+Client 4 - Evaluate on 5292 samples: Average loss: 0.4385, Accuracy: 89.10%
+
+DEBUG flower 2022-03-17 18:54:42,481 | connection.py:68 | Insecure gRPC channel closed
+DEBUG flower 2022-03-17 18:54:42,481 | connection.py:68 | Insecure gRPC channel closed
+INFO flower 2022-03-17 18:54:42,481 | app.py:72 | Disconnect and shut down
+DEBUG flower 2022-03-17 18:54:42,481 | connection.py:68 | Insecure gRPC channel closed
+DEBUG flower 2022-03-17 18:54:42,481 | connection.py:68 | Insecure gRPC channel closed
+INFO flower 2022-03-17 18:54:42,481 | app.py:72 | Disconnect and shut down
+INFO flower 2022-03-17 18:54:42,481 | app.py:72 | Disconnect and shut down
+INFO flower 2022-03-17 18:54:42,481 | app.py:72 | Disconnect and shut down
+DEBUG flower 2022-03-17 18:54:42,483 | connection.py:68 | Insecure gRPC channel closed
+INFO flower 2022-03-17 18:54:42,484 | app.py:72 | Disconnect and shut down
