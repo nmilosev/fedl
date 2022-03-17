@@ -63,19 +63,19 @@ class NUS(Strategy):
 
     # pylint: disable=too-many-arguments,too-many-instance-attributes
     def __init__(
-            self,
-            fraction_fit: float = 1,
-            fraction_eval: float = 1,
-            min_fit_clients: int = 2,
-            min_eval_clients: int = 2,
-            min_available_clients: int = 2,
-            eval_fn: Optional[
-                Callable[[Weights], Optional[Tuple[float, Dict[str, Scalar]]]]
-            ] = None,
-            on_fit_config_fn: Optional[Callable[[int], Dict[str, Scalar]]] = None,
-            on_evaluate_config_fn: Optional[Callable[[int], Dict[str, Scalar]]] = None,
-            accept_failures: bool = True,
-            initial_parameters: Optional[Parameters] = None,
+        self,
+        fraction_fit: float = 1,
+        fraction_eval: float = 1,
+        min_fit_clients: int = 5,
+        min_eval_clients: int = 5,
+        min_available_clients: int = 5,
+        eval_fn: Optional[
+            Callable[[Weights], Optional[Tuple[float, Dict[str, Scalar]]]]
+        ] = None,
+        on_fit_config_fn: Optional[Callable[[int], Dict[str, Scalar]]] = None,
+        on_evaluate_config_fn: Optional[Callable[[int], Dict[str, Scalar]]] = None,
+        accept_failures: bool = True,
+        initial_parameters: Optional[Parameters] = None,
     ) -> None:
         """Non-uniform Strategy init.
 
@@ -114,6 +114,7 @@ class NUS(Strategy):
         self.on_evaluate_config_fn = on_evaluate_config_fn
         self.accept_failures = accept_failures
         self.initial_parameters = initial_parameters
+        self.q = None
 
     def __repr__(self) -> str:
         rep = f"NUS(accept_failures={self.accept_failures})"
@@ -131,7 +132,7 @@ class NUS(Strategy):
         return max(num_clients, self.min_eval_clients), self.min_available_clients
 
     def initialize_parameters(
-            self, client_manager: ClientManager
+        self, client_manager: ClientManager
     ) -> Optional[Parameters]:
         """Initialize global model parameters."""
 
@@ -149,7 +150,7 @@ class NUS(Strategy):
         return initial_parameters
 
     def evaluate(
-            self, parameters: Parameters
+        self, parameters: Parameters
     ) -> Optional[Tuple[float, Dict[str, Scalar]]]:
         """Evaluate model parameters using an evaluation function."""
         if self.eval_fn is None:
@@ -167,15 +168,13 @@ class NUS(Strategy):
         return loss, metrics
 
     def configure_fit(
-            self, rnd: int, parameters: Parameters, client_manager: ClientManager
+        self, rnd: int, parameters: Parameters, client_manager: ClientManager
     ) -> List[Tuple[ClientProxy, FitIns]]:
         """Configure the next round of training."""
         config = {}
         if self.on_fit_config_fn is not None:
             # Custom fit config function provided
             config = self.on_fit_config_fn(rnd)
-
-        config["should_send_params"] = False
 
         # Sample clients
         sample_size, min_num_clients = self.num_fit_clients(
@@ -186,17 +185,23 @@ class NUS(Strategy):
         )
 
         # modify client configs
-        client_configuration = [(client, FitIns(parameters, config)) for client in clients]
+        client_configuration = [
+            (client, FitIns(parameters, config)) for client in clients
+        ]
 
         for client, fitins in client_configuration:
-            if True: # TODO
-                fitins.config["should_send_params"] = True
+            fitins.config["should_send_params"] = True
+            if self.q: # check if we have q's ready
+                q_i = self.q[client]
+                if torch.bernoulli(torch.tensor(float(q_i))) != 1:
+                    fitins.config["should_send_params"] = False
+            print(fitins.config)
 
         # Return client/config pairs
         return client_configuration
 
     def configure_evaluate(
-            self, rnd: int, parameters: Parameters, client_manager: ClientManager
+        self, rnd: int, parameters: Parameters, client_manager: ClientManager
     ) -> List[Tuple[ClientProxy, EvaluateIns]]:
         """Configure the next round of evaluation."""
         # Do not configure federated evaluation if a centralized evaluation
@@ -223,13 +228,14 @@ class NUS(Strategy):
             clients = list(client_manager.all().values())
 
         # Return client/config pairs
+        # print("eval ins", [(client, evaluate_ins) for client in clients])
         return [(client, evaluate_ins) for client in clients]
 
     def aggregate_fit(
-            self,
-            rnd: int,
-            results: List[Tuple[ClientProxy, FitRes]],
-            failures: List[BaseException],
+        self,
+        rnd: int,
+        results: List[Tuple[ClientProxy, FitRes]],
+        failures: List[BaseException],
     ) -> Tuple[Optional[Parameters], Dict[str, Scalar]]:
         """Aggregate fit results using weighted average."""
         if not results:
@@ -237,33 +243,62 @@ class NUS(Strategy):
         # Do not aggregate if there are failures and failures are not accepted
         if not self.accept_failures and failures:
             return None, {}
-        # Convert results
-        weights_results = []
-        q = dict()
 
-        # pprint(client_statuses)
+        q = dict()  # q_i values
+        c = dict()  # c_i values
 
         for client, fit_res in results:
-            S_i = 1 / 10 * fit_res.num_examples
-            # TODO Leave as constant for now
-            # sigma_i = 8
-            # TODO: Leave constant, or parametrize (batch_size / constant)
-            # K_i = fit_res.num_examples
-            # K_i = fit_res.metrics['train_batch_size'] / 4
+            # TODO Leave sigma as constant for now
+            sigma_i = 8
+            k_i = (
+                fit_res.num_examples
+            )  # number of local updates, using num_examples for now
+            # fit_res.metrics["gradient_norm"] is used for now (w[t-1] norm) instead of gradient norm w*
+            c_i = (k_i**2) * (fit_res.metrics["gradient_norm"] ** 2) + (
+                k_i * sigma_i**2
+            )
+            c[client] = np.sqrt(c_i)  # only save square roots of c_i values
 
-            q_i = 1 / S_i
-            q[client] = q_i
+        # sort c_i values in descending order
+        c = dict(sorted(c.items(), key=lambda item: -item[1]))
+        # extract values
+        c_values = list(c.values())
 
-        for client, fit_res in results:
-            # TODO check if need to apply L17 to this:
-            if fit_res.parameters == [np.array(0)]:
-                print(f"Skipping update from client {client.cid} because of missing params")
-                continue  # this client skipped sending updates
-            q_i = q[client]
-            if torch.bernoulli(torch.tensor(q_i)) == 1:
-                weights_results.append((parameters_to_weights(fit_res.parameters), fit_res.num_examples))
+        # S is the number of clients to choose (constant for now)
+        S = 2
+
+        # total number of clients
+        N = len(results)
+        m_star = N
+
+        # find m_star
+        for m in range(0, len(c_values) - 1):
+            test = c_values[m + 1] * (S - m) / sum(c_values[m + 1 : N])
+            if test < 1:
+                m_star = m
+                break
+
+        # calculate q_i values
+        for i in range(0, N):
+            if i <= m_star:
+                q[i] = 1
             else:
-                print(f"Skipping update from client {client.cid} because of q_i bernoulli")
+                q[i] = (S - m_star) * c_values[i] / sum(c_values[m_star + 1 : N])
+
+        self.q = dict()
+        for i, (client, _) in enumerate(c.items()):
+            self.q[client] = q[i]  # allow access for later choosing of the clients
+
+        weights_results = []
+        for client, fit_res in results:
+            if fit_res.parameters == np.array([0.]):
+                print(
+                    f"Skipping update from client {client.cid} because of missing params"
+                )
+                continue  # this client skipped sending updates
+            weights_results.append(
+                (parameters_to_weights(fit_res.parameters), fit_res.num_examples)
+            )
 
         if not weights_results:
             return None, {}
@@ -272,10 +307,10 @@ class NUS(Strategy):
             return ret, {}
 
     def aggregate_evaluate(
-            self,
-            rnd: int,
-            results: List[Tuple[ClientProxy, EvaluateRes]],
-            failures: List[BaseException],
+        self,
+        rnd: int,
+        results: List[Tuple[ClientProxy, EvaluateRes]],
+        failures: List[BaseException],
     ) -> Tuple[Optional[float], Dict[str, Scalar]]:
         """Aggregate evaluation losses using weighted average."""
         if not results:

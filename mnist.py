@@ -26,6 +26,7 @@ https://github.com/pytorch/examples/blob/master/mnist/main.py
 # pylint: disable=W0223
 
 import timeit
+import sys
 from collections import OrderedDict
 from typing import Tuple
 
@@ -147,8 +148,8 @@ def load_data(
     )
     test_dataset = datasets.MNIST(data_root, train=False, transform=transform)
 
-    # TODO: for testing only take 100 samples
-    train_indices, test_indices = np.arange(0, 50), np.arange(50, 100)
+    # TODO: for testing only take 1000 samples
+    train_indices, test_indices = np.arange(0, 500), np.arange(500, 1000)
     train_dataset = Subset(train_dataset, train_indices)
     test_dataset = Subset(test_dataset, test_indices)
 
@@ -371,6 +372,9 @@ class PytorchMNISTClient(fl.client.Client):
         -------
 
         """
+        # print("weights", weights)
+        if weights == np.array([0.]):
+            return # skip update, we didn't get weights
         state_dict = OrderedDict(
             {
                 k: torch.Tensor(v)
@@ -437,28 +441,22 @@ class PytorchMNISTClient(fl.client.Client):
 
         # Return the refined weights and the number of examples used for training
         weights_prime: fl.common.Weights = self.get_weights()
+        print(ins.config["should_send_params"])
         if ins.config["should_send_params"]:
             params_prime = fl.common.weights_to_parameters(weights_prime) # only return if server says so
         else:
-            params_prime = fl.common.weights_to_parameters([np.array(0)])
+            print("return 0")
+            params_prime = fl.common.weights_to_parameters(np.array([0.]))
         fit_duration = timeit.default_timer() - fit_begin
+        print("Client", self.cid, "returning params_prime of size", sys.getsizeof(params_prime.tensors), len(params_prime.tensors), sum(sys.getsizeof(t) for t in params_prime.tensors))
         return fl.common.FitRes(
             parameters=params_prime,
             num_examples=num_examples_train,
             num_examples_ceil=num_examples_train,
             fit_duration=fit_duration,
             metrics={"batch_size": self.train_batch_size,
-                     "model_diff": self.compare_model_gradient_norms(ins),
+                     # "model_diff": self.compare_model_gradient_norms(ins),
                      "gradient_norm": self.model_gradient_norm()}
-
-            # TODO:
-            # Server mora slati globalni apdejt OK
-            # Svako racuna lokalni gradijent na osnovu svojih podataka OK
-            # Ovde slati samo normu server
-            # Server resava 17 i bira ko treba da posalje ceo gradijent
-            # Averaging i idemo na pocetak ponovo
-
-            # Sigma za sada konstanta, razmisliti da li može eksperimentalno sa treniranim modelom da se utvrdi sigma za podskup podataka
         )
 
     def evaluate(self, ins: fl.common.EvaluateIns) -> fl.common.EvaluateRes:
@@ -475,10 +473,11 @@ class PytorchMNISTClient(fl.client.Client):
             Information the clients testing results.
 
         """
-        weights = fl.common.parameters_to_weights(ins.parameters)
 
         # Use provided weights to update the local model
+        weights = fl.common.parameters_to_weights(ins.parameters)
         self.set_weights(weights)
+
 
         (
             num_examples_test,
