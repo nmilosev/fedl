@@ -244,6 +244,14 @@ class NUS(Strategy):
             c_i = (k_i**2) * (fit_res.metrics["gradient_norm"] ** 2) + (
                 k_i * sigma_i**2
             )
+            # TODO: ako klijent nije poslao ni metriku uzmemo stari c i: c_i, d_t =  c_i * (1 + alfa * d_t)
+            # TODO: d_t je broj iteracija koje su prosle od prethodnog javljanja
+
+            # TODO: pustiti 20 epoha i manji LR, probati možda emnist ili fmnist
+
+            # TODO: razmisliti o podeli podataka na nejednake delove i o veštačkom usporavanju nekih klijenata
+            # TODO: parametar (training time)
+            # TODO: dodati metriku validacija na lokalnom validacionom skupu pre treninga (kod klijenta)
             c[client] = np.sqrt(c_i)  # only save square roots of c_i values
 
         # sort c_i values in descending order
