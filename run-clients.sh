@@ -3,7 +3,7 @@
 set -e
 
 SERVER_ADDRESS="[::]:8080"
-NUM_CLIENTS=5
+NUM_CLIENTS=4
 NUM_EPOCHS=5
 
 echo "Starting $NUM_CLIENTS clients."
@@ -15,7 +15,7 @@ do
       --cid=$i \
       --server_address=$SERVER_ADDRESS \
       --nb_clients=$NUM_CLIENTS \
-      --epochs=$NUM_EPOCHS &
+      --epochs=$NUM_EPOCHS &> client_$i.log &
     )
       
 done

@@ -70,12 +70,12 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-    if 'c' in args.cid:
-        args.cid = args.cid.replace('c', '')
+    if "c" in args.cid:
+        args.cid = args.cid.replace("c", "")
     args.cid = int(args.cid)
     print("Client CID:", args.cid)
     # DATA_ROOT = "/private/fedl-data/data" + str(args.cid)
-    DATA_ROOT = 'data'
+    DATA_ROOT = "data"
 
     # Load MNIST data
     train_loader, test_loader = mnist.load_data(
@@ -97,7 +97,7 @@ if __name__ == "__main__":
         test_loader=test_loader,
         epochs=args.epochs,
         device=device,
-        train_batch_size=args.train_batch_size
+        train_batch_size=args.train_batch_size,
     )
 
     # Start client

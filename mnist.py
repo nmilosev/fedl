@@ -45,7 +45,6 @@ import flwr as fl
 import flwr.common
 
 
-
 def dataset_partitioner(
     dataset: torch.utils.data.Dataset,
     batch_size: int,
@@ -93,9 +92,12 @@ def dataset_partitioner(
 
     # Random chunks (only use np.random, so all clients have same indices)
 
-    split_points = np.random.choice(len(dataset_indices) - 2, number_of_clients - 1, replace=False) + 1
+    split_points = (
+        np.random.choice(len(dataset_indices) - 2, number_of_clients - 1, replace=False)
+        + 1
+    )
     split_points.sort()
-    print(split_points) # check if everywhere is the same
+    print(split_points)  # check if everywhere is the same
     result = np.split(dataset_indices, split_points)
     data_sampler = SubsetRandomSampler(result[client_id])
 
@@ -143,10 +145,19 @@ def load_data(
         [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
     )
 
+    # transform = transforms.Compose(
+    #     [transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))]
+    # )
+
     train_dataset = datasets.MNIST(
-        data_root, train=True, download=True, transform=transform
+       data_root, train=True, download=True, transform=transform
     )
     test_dataset = datasets.MNIST(data_root, train=False, transform=transform)
+
+    # train_dataset = datasets.FashionMNIST(
+    #     data_root, train=True, download=True, transform=transform
+    # )
+    # test_dataset = datasets.FashionMNIST(data_root, train=False, transform=transform)
 
     # for testing only take 1000 samples
     # train_indices, test_indices = np.arange(0, 500), np.arange(500, 1000)
@@ -219,7 +230,7 @@ def train(
     train_loader: torch.utils.data.DataLoader,
     epochs: int,
     device: torch.device = torch.device("cpu"),
-    cid: int = 0
+    cid: int = 0,
 ) -> int:
     """Train routine based on 'Basic MNIST Example'
 
@@ -248,7 +259,7 @@ def train(
 
     """
     model.train()
-    optimizer = optim.Adadelta(model.parameters(), lr=1e-3)
+    optimizer = optim.Adadelta(model.parameters(), lr=0.003)
     # scheduler = StepLR(optimizer, step_size=1, gamma=0.7)
     print(f"Training {epochs} epoch(s) w/ {len(train_loader)} mini-batches each")
     for epoch in range(epochs):  # loop over the dataset multiple times
@@ -345,7 +356,7 @@ class PytorchMNISTClient(fl.client.Client):
         test_loader: datasets,
         epochs: int,
         device: torch.device = torch.device("cpu"),
-        train_batch_size: int = 0
+        train_batch_size: int = 0,
     ) -> None:
         self.model = MNISTNet().to(device)
         self.cid = cid
@@ -354,6 +365,7 @@ class PytorchMNISTClient(fl.client.Client):
         self.device = device
         self.epochs = epochs
         self.train_batch_size = train_batch_size
+        self.round = 0
 
     def get_weights(self) -> fl.common.Weights:
         """Get model weights as a list of NumPy ndarrays."""
@@ -373,7 +385,7 @@ class PytorchMNISTClient(fl.client.Client):
 
         """
         if len(weights) == 1:
-             return # skip update, we didn't get weights
+            return  # skip update, we didn't get weights
         state_dict = OrderedDict(
             {
                 k: torch.Tensor(v)
@@ -390,22 +402,25 @@ class PytorchMNISTClient(fl.client.Client):
 
     def model_gradient_norm(self):
         total_norm = 0
-        parameters = [p for p in self.model.parameters() if p.grad is not None and p.requires_grad]
+        parameters = [
+            p for p in self.model.parameters() if p.grad is not None and p.requires_grad
+        ]
         for p in parameters:
             param_norm = p.grad.detach().data.norm(2)
             total_norm += param_norm.item() ** 2
-        total_norm = total_norm ** 0.5
+        total_norm = total_norm**0.5
         return total_norm
 
     def compare_model_gradient_norms(self, older_model):
         current = self.get_weights()
         old = fl.common.parameters_to_weights(older_model.parameters)
 
-        mse = 0.
+        mse = 0.0
 
         for (layer_new, layer_old) in zip(current, old):
-            mse += torch.nn.functional.mse_loss(torch.tensor(layer_new),
-                                                torch.tensor(layer_old))
+            mse += torch.nn.functional.mse_loss(
+                torch.tensor(layer_new), torch.tensor(layer_old)
+            )
 
         return float(mse)
 
@@ -426,6 +441,17 @@ class PytorchMNISTClient(fl.client.Client):
         # Set the seed so we are sure to generate the same global batches
         # indices across all clients
         np.random.seed(123)
+        self.round += 1
+
+        (
+            num_examples_test,
+            test_loss,
+            accuracy,
+        ) = test(self.model, self.test_loader, device=self.device)
+
+        print(
+            f"Client {self.cid} round {self.round} (before train) - Evaluate on {num_examples_test} samples: Average loss: {test_loss:.4f}, Accuracy: {100*accuracy:.2f}%\n"
+        )
 
         weights: fl.common.Weights = fl.common.parameters_to_weights(ins.parameters)
         fit_begin = timeit.default_timer()
@@ -435,31 +461,54 @@ class PytorchMNISTClient(fl.client.Client):
 
         # Train model
         num_examples_train: int = train(
-            self.model, self.train_loader, epochs=self.epochs, device=self.device, cid=self.cid
+            self.model,
+            self.train_loader,
+            epochs=self.epochs,
+            device=self.device,
+            cid=self.cid,
         )
 
         # Return the refined weights and the number of examples used for training
         weights_prime: fl.common.Weights = self.get_weights()
-        if "should_send_params" in ins.config: # whether to use NUS
-            print("Client", self.cid, "should_send_params:", ins.config["should_send_params"], "\n")
+        if "should_send_params" in ins.config:  # whether to use NUS
+            print(
+                "Client",
+                self.cid,
+                "should_send_params:",
+                ins.config["should_send_params"],
+                "\n",
+            )
             if ins.config["should_send_params"]:
-                params_prime = fl.common.weights_to_parameters(weights_prime) # only return if server says so
+                params_prime = fl.common.weights_to_parameters(
+                    weights_prime
+                )  # only return if server says so
             else:
-                params_prime = fl.common.weights_to_parameters(np.array([0.]))
+                params_prime = fl.common.weights_to_parameters(np.array([0.0]))
         else:
             params_prime = fl.common.weights_to_parameters(weights_prime)
-        
+
         fit_duration = timeit.default_timer() - fit_begin
-        message_size =  sum(sys.getsizeof(t) for t in params_prime.tensors)
-        print("\n Client", self.cid, "returning params_prime of size", message_size, " \n")
+        message_size = sum(sys.getsizeof(t) for t in params_prime.tensors)
+        print(
+            "\n Client",
+            self.cid,
+            "round",
+            self.round,
+            "returning params_prime of size",
+            message_size,
+            " \n",
+        )
         return fl.common.FitRes(
             parameters=params_prime,
             num_examples=num_examples_train,
             num_examples_ceil=num_examples_train,
             fit_duration=fit_duration,
-            metrics={"batch_size": self.train_batch_size,
-                     # "model_diff": self.compare_model_gradient_norms(ins),
-                     "gradient_norm": self.model_gradient_norm()}
+            metrics={
+                "batch_size": self.train_batch_size,
+                # "model_diff": self.compare_model_gradient_norms(ins),
+                "gradient_norm": self.model_gradient_norm(),
+                "training_time": fit_duration,
+            },
         )
 
     def evaluate(self, ins: fl.common.EvaluateIns) -> fl.common.EvaluateRes:
@@ -481,14 +530,13 @@ class PytorchMNISTClient(fl.client.Client):
         weights = fl.common.parameters_to_weights(ins.parameters)
         self.set_weights(weights)
 
-
         (
             num_examples_test,
             test_loss,
             accuracy,
         ) = test(self.model, self.test_loader, device=self.device)
         print(
-            f"Client {self.cid} - Evaluate on {num_examples_test} samples: Average loss: {test_loss:.4f}, Accuracy: {100*accuracy:.2f}%\n"
+            f"Client {self.cid} round {self.round} - Evaluate on {num_examples_test} samples: Average loss: {test_loss:.4f}, Accuracy: {100*accuracy:.2f}%\n"
         )
 
         # Return the number of evaluation examples and the evaluation result (loss)

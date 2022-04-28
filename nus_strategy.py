@@ -175,7 +175,7 @@ class NUS(Strategy):
         for client, fitins in client_configuration:
             fitins.config = copy.deepcopy(fitins.config)
             fitins.config["should_send_params"] = True
-            if self.q: # check if we have q's ready
+            if self.q:  # check if we have q's ready
                 q_i = self.q[client]
                 if torch.bernoulli(torch.tensor(float(q_i))) != 1:
                     fitins.config["should_send_params"] = False
@@ -246,12 +246,18 @@ class NUS(Strategy):
             )
             # TODO: ako klijent nije poslao ni metriku uzmemo stari c i: c_i, d_t =  c_i * (1 + alfa * d_t)
             # TODO: d_t je broj iteracija koje su prosle od prethodnog javljanja
+            # Za sada flwr ceka sve klijente
 
             # TODO: pustiti 20 epoha i manji LR, probati možda emnist ili fmnist
+            # uradjeno sve osim emnist za nus, treba sad za fedavg, srediti google sheet
+
 
             # TODO: razmisliti o podeli podataka na nejednake delove i o veštačkom usporavanju nekih klijenata
+            # dodata nejednaka podela, vec imamo context switching u testovima
             # TODO: parametar (training time)
+            # dodato
             # TODO: dodati metriku validacija na lokalnom validacionom skupu pre treninga (kod klijenta)
+            # dodato
             c[client] = np.sqrt(c_i)  # only save square roots of c_i values
 
         # sort c_i values in descending order
@@ -286,7 +292,7 @@ class NUS(Strategy):
 
         weights_results = []
         for client, fit_res in results:
-            if fit_res.parameters == np.array([0.]):
+            if fit_res.parameters == np.array([0.0]):
                 print(
                     f"Skipping update from client {client.cid} because of missing params"
                 )

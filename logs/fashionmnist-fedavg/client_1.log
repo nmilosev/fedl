@@ -1,0 +1,269 @@
+DEBUG flower 2022-04-19 14:47:47,322 | connection.py:36 | ChannelConnectivity.IDLE
+DEBUG flower 2022-04-19 14:47:47,323 | connection.py:36 | ChannelConnectivity.CONNECTING
+DEBUG flower 2022-04-19 14:47:47,323 | connection.py:36 | ChannelConnectivity.READY
+INFO flower 2022-04-19 14:47:47,323 | app.py:61 | Opened (insecure) gRPC connection
+DEBUG flower 2022-04-19 16:20:39,556 | connection.py:68 | Insecure gRPC channel closed
+INFO flower 2022-04-19 16:20:39,556 | app.py:72 | Disconnect and shut down
+Client CID: 1
+[28016 28321 47294 53184]
+[1344 3713 4197 4708]
+Client 1 round 1 (before train) - Evaluate on 2369 samples: Average loss: 2.3136, Accuracy: 10.93%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+
+
+
+
+
+ Client 1 round 1 returning params_prime of size 4800816  
+
+Client 1 round 1 - Evaluate on 2369 samples: Average loss: 0.7613, Accuracy: 75.35%
+
+Client 1 round 2 (before train) - Evaluate on 2369 samples: Average loss: 0.7613, Accuracy: 75.35%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+
+
+
+
+
+ Client 1 round 2 returning params_prime of size 4800816  
+
+Client 1 round 2 - Evaluate on 2369 samples: Average loss: 0.5913, Accuracy: 78.60%
+
+Client 1 round 3 (before train) - Evaluate on 2369 samples: Average loss: 0.5913, Accuracy: 78.60%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+
+
+
+
+
+ Client 1 round 3 returning params_prime of size 4800816  
+
+Client 1 round 3 - Evaluate on 2369 samples: Average loss: 0.5337, Accuracy: 80.92%
+
+Client 1 round 4 (before train) - Evaluate on 2369 samples: Average loss: 0.5337, Accuracy: 80.92%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+
+
+
+
+
+ Client 1 round 4 returning params_prime of size 4800816  
+
+Client 1 round 4 - Evaluate on 2369 samples: Average loss: 0.4968, Accuracy: 82.02%
+
+Client 1 round 5 (before train) - Evaluate on 2369 samples: Average loss: 0.4968, Accuracy: 82.02%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+
+
+
+
+
+ Client 1 round 5 returning params_prime of size 4800816  
+
+Client 1 round 5 - Evaluate on 2369 samples: Average loss: 0.4691, Accuracy: 83.24%
+
+Client 1 round 6 (before train) - Evaluate on 2369 samples: Average loss: 0.4691, Accuracy: 83.24%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+
+
+
+
+
+ Client 1 round 6 returning params_prime of size 4800816  
+
+Client 1 round 6 - Evaluate on 2369 samples: Average loss: 0.4505, Accuracy: 83.92%
+
+Client 1 round 7 (before train) - Evaluate on 2369 samples: Average loss: 0.4505, Accuracy: 83.92%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+
+
+
+
+
+ Client 1 round 7 returning params_prime of size 4800816  
+
+Client 1 round 7 - Evaluate on 2369 samples: Average loss: 0.4340, Accuracy: 84.85%
+
+Client 1 round 8 (before train) - Evaluate on 2369 samples: Average loss: 0.4340, Accuracy: 84.85%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+
+
+
+
+
+ Client 1 round 8 returning params_prime of size 4800816  
+
+Client 1 round 8 - Evaluate on 2369 samples: Average loss: 0.4209, Accuracy: 85.35%
+
+Client 1 round 9 (before train) - Evaluate on 2369 samples: Average loss: 0.4209, Accuracy: 85.35%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+
+
+
+
+
+ Client 1 round 9 returning params_prime of size 4800816  
+
+Client 1 round 9 - Evaluate on 2369 samples: Average loss: 0.4117, Accuracy: 85.69%
+
+Client 1 round 10 (before train) - Evaluate on 2369 samples: Average loss: 0.4117, Accuracy: 85.69%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+
+
+
+
+
+ Client 1 round 10 returning params_prime of size 4800816  
+
+Client 1 round 10 - Evaluate on 2369 samples: Average loss: 0.4019, Accuracy: 85.73%
+
+Client 1 round 11 (before train) - Evaluate on 2369 samples: Average loss: 0.4019, Accuracy: 85.73%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+
+
+
+
+
+ Client 1 round 11 returning params_prime of size 4800816  
+
+Client 1 round 11 - Evaluate on 2369 samples: Average loss: 0.3949, Accuracy: 85.90%
+
+Client 1 round 12 (before train) - Evaluate on 2369 samples: Average loss: 0.3949, Accuracy: 85.90%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+
+
+
+
+
+ Client 1 round 12 returning params_prime of size 4800816  
+
+Client 1 round 12 - Evaluate on 2369 samples: Average loss: 0.3888, Accuracy: 85.99%
+
+Client 1 round 13 (before train) - Evaluate on 2369 samples: Average loss: 0.3888, Accuracy: 85.99%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+
+
+
+
+
+ Client 1 round 13 returning params_prime of size 4800816  
+
+Client 1 round 13 - Evaluate on 2369 samples: Average loss: 0.3822, Accuracy: 86.20%
+
+Client 1 round 14 (before train) - Evaluate on 2369 samples: Average loss: 0.3822, Accuracy: 86.20%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+
+
+
+
+
+ Client 1 round 14 returning params_prime of size 4800816  
+
+Client 1 round 14 - Evaluate on 2369 samples: Average loss: 0.3775, Accuracy: 86.58%
+
+Client 1 round 15 (before train) - Evaluate on 2369 samples: Average loss: 0.3775, Accuracy: 86.58%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+
+
+
+
+
+ Client 1 round 15 returning params_prime of size 4800816  
+
+Client 1 round 15 - Evaluate on 2369 samples: Average loss: 0.3723, Accuracy: 86.70%
+
+Client 1 round 16 (before train) - Evaluate on 2369 samples: Average loss: 0.3723, Accuracy: 86.70%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+
+
+
+
+
+ Client 1 round 16 returning params_prime of size 4800816  
+
+Client 1 round 16 - Evaluate on 2369 samples: Average loss: 0.3697, Accuracy: 86.49%
+
+Client 1 round 17 (before train) - Evaluate on 2369 samples: Average loss: 0.3697, Accuracy: 86.49%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+
+
+
+
+
+ Client 1 round 17 returning params_prime of size 4800816  
+
+Client 1 round 17 - Evaluate on 2369 samples: Average loss: 0.3651, Accuracy: 87.04%
+
+Client 1 round 18 (before train) - Evaluate on 2369 samples: Average loss: 0.3651, Accuracy: 87.04%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+
+
+
+
+
+ Client 1 round 18 returning params_prime of size 4800816  
+
+Client 1 round 18 - Evaluate on 2369 samples: Average loss: 0.3610, Accuracy: 87.17%
+
+Client 1 round 19 (before train) - Evaluate on 2369 samples: Average loss: 0.3610, Accuracy: 87.17%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+
+
+
+
+
+ Client 1 round 19 returning params_prime of size 4800816  
+
+Client 1 round 19 - Evaluate on 2369 samples: Average loss: 0.3566, Accuracy: 87.34%
+
+Client 1 round 20 (before train) - Evaluate on 2369 samples: Average loss: 0.3566, Accuracy: 87.34%
+
+Training 5 epoch(s) w/ 5 mini-batches each
+
+
+
+
+
+
+ Client 1 round 20 returning params_prime of size 4800816  
+
+Client 1 round 20 - Evaluate on 2369 samples: Average loss: 0.3537, Accuracy: 87.46%
+

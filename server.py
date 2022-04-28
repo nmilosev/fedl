@@ -25,11 +25,14 @@ if __name__ == "__main__":
     weights = [val.cpu().numpy() for _, val in model.state_dict().items()]
     server_initial_parameters = common.weights_to_parameters(weights)
     # NUS
-    flwr.server.start_server(config={"num_rounds": 5}, strategy=NUS(initial_parameters=server_initial_parameters))
+    # flwr.server.start_server(
+    #     config={"num_rounds": 20},
+    #     strategy=NUS(initial_parameters=server_initial_parameters),
+    # )
     # FedAvg
-    # flwr.server.start_server(config={"num_rounds": 5}, strategy=FedAvg(initial_parameters=server_initial_parameters,
-    #     fraction_fit = 1,
-    #     fraction_eval = 1,
-    #     min_fit_clients = 5,
-    #     min_eval_clients = 5,
-    #    min_available_clients = 5))
+    flwr.server.start_server(config={"num_rounds": 20}, strategy=FedAvg(initial_parameters=server_initial_parameters,
+        fraction_fit = 1,
+        fraction_eval = 1,
+        min_fit_clients = 4,
+        min_eval_clients = 4,
+        min_available_clients = 4))
