@@ -1,13 +1,14 @@
 FROM continuumio/miniconda3
  
+COPY avcc_client/avcc-env.yml .
+# tensorflow-gpu, cuda everything is inside of the avcc-env.yml
+RUN conda env create -f avcc-env.yml
+
 WORKDIR /opt/marvel
 COPY *.py *.sh marvel-conda-env.yaml requirements.txt .
 
 WORKDIR /opt/marvel/avcc_client
 COPY avcc_client .
-
-# tensorflow-gpu, cuda everything is inside of the avcc-env.yml
-RUN conda env create -f avcc-env.yml
 
 # Default values:
 ENV CID=1
