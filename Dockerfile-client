@@ -1,22 +1,18 @@
-FROM python:3.8
-
-# Install flower and dependencies for machine learning
-RUN python3 --version
-RUN pip3 install torch==1.8.2+cpu torchvision==0.9.2+cpu torchaudio==0.8.2 -f https://download.pytorch.org/whl/lts/1.8/torch_lts.html 
-RUN pip3 install flwr==0.17.0 
-
-# Copy code in final step so code changes don't invalidate the
-# previous docker layers
+FROM continuumio/miniconda3
+ 
 WORKDIR /opt/marvel
-COPY *.py .
-COPY *.sh .
+COPY *.py *.sh marvel-conda-env.yaml requirements.txt .
+
+WORKDIR /opt/marvel/avcc_client
+COPY avcc_client .
+
+# tensorflow-gpu, cuda everything is inside of the avcc-env.yml
+RUN conda env create -f avcc-env.yml
 
 # Default values:
 ENV CID=1
-ENV SERVER_ADDRESS=localhost:8080
-ENV NB_CLIENTS=5
-ENV EPOCHS=10
+ENV FEDL_SERVER=localhost:8080
 
 # Start the FL client
-CMD python3 client.py --cid=$CID --server_address=$SERVER_ADDRESS --nb_clients=$NB_CLIENTS --epochs=$EPOCHS
+CMD /opt/conda/envs/avcc/bin/python avcc_client.py 
 

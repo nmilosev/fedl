@@ -1,15 +1,12 @@
 FROM python:3.8
 
 # Install flower and dependencies for machine learning
-RUN python3 --version
+RUN pip3 install flwr==0.17.0 scikit-learn==1.0.1 
+# need torch for the strategy:
 RUN pip3 install torch==1.8.2+cpu torchvision==0.9.2+cpu torchaudio==0.8.2 -f https://download.pytorch.org/whl/lts/1.8/torch_lts.html 
-RUN pip3 install flwr==0.17.0 
 
-# Copy code in final step so code changes don't invalidate the
-# previous docker layers
 WORKDIR /opt/marvel
-COPY *.py .
-COPY *.sh .
+COPY *.py *.sh marvel-conda-env.yaml requirements.txt .
 
 EXPOSE 8080/udp
 EXPOSE 8080/tcp
