@@ -1,0 +1,32 @@
+
+
+FROM continuumio/miniconda3
+ 
+COPY avcc_client/avcc-env.yml .
+# tensorflow-gpu, cuda everything is inside of the avcc-env.yml
+RUN conda env create -f avcc-env.yml
+
+WORKDIR /opt/marvel
+COPY *.py *.sh marvel-conda-env.yaml requirements.txt .
+
+WORKDIR /opt/marvel/avcc_client
+# big files first
+COPY avcc_client/*.h5 .
+COPY avcc_client/*.py .
+COPY avcc_client/*.json .
+COPY avcc_client/*.yml .
+
+EXPOSE 8080/udp
+EXPOSE 8080/tcp
+
+# ENV SERVER_ARGS="--nus"
+ENV PYTHONPATH="."
+# ENV USE_MODEL_REPO="disable"
+# ENV GRACEFUL_EXIT="disable"
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /opt/marvel
+
+# Start the FL server
+CMD /opt/conda/envs/avcc/bin/python avcc_client/server.py $SERVER_ARGS
+

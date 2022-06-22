@@ -1,0 +1,16 @@
+
+
+# TODO: ako klijent nije poslao ni metriku uzmemo stari c i: c_i, d_t =  c_i * (1 + alfa * d_t)
+# TODO: d_t je broj iteracija koje su prosle od prethodnog javljanja
+# Za sada flwr ceka sve klijente
+
+# TODO: pustiti 20 epoha i manji LR, probati možda emnist ili fmnist
+# uradjeno sve osim emnist za nus, treba sad za fedavg, srediti google sheet
+
+
+# TODO: razmisliti o podeli podataka na nejednake delove i o veštačkom usporavanju nekih klijenata
+# dodata nejednaka podela, vec imamo context switching u testovima
+# TODO: parametar (training time)
+# dodato
+# TODO: dodati metriku validacija na lokalnom validacionom skupu pre treninga (kod klijenta)
+# dodato

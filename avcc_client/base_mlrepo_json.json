@@ -1,0 +1,32 @@
+{
+	"acceptableDataSources": [ "images" ],
+	"algorithm": "avcc_tf", 
+	"alternateName": "AVCC model (crowd counting output)",
+	"dataProvider": "UNS_F1",
+	"dateCreated": null,
+	"dateModified": null,
+	"description": "Audio-Visual Crowd Counting model that outputs the people count in the frame",
+	"dockerImage": "registry.marvel-platform.eu/fedlclient_uns_f1:1", 
+	"id": "avcc_headcount_uns_f1_v0", 
+	"inputAttributes": [ "audio_spectrogram", "video_frame" ],
+	"mlFramework": "tensorflow==2.6.0", 
+	"name": "avcc_headcount_uns_f1_v0", 
+	"outputAttributes": [ "predictedCount" ], 
+	"outputDataTypes": [ "integer" ],
+	"owner": [ "UNS", "GRN", "MT" ], 
+	"refMLProcessing": ["https://git.marvel-project.eu/manolis.falelakis/marvel-technical-integration/-/blob/main/Documentation/avcc.md"], 
+	"seeAlso": ["https://git.marvel-project.eu/manolis.falelakis/marvel-technical-integration/-/blob/main/Documentation/avcc.md"],
+	"source": "https://marvel-platform.eu/files/shared/disco", 
+	"typeOfAlgorithm": "Deep Neural Network",
+	"version": 0,
+	"data":  {
+		"file_name_weights": "avcc-headcount-uns-full_tensorflow-v0", 
+		"model_definition": "https://gitlab.au.dk/maleci/sl_vit/-/blob/master/train_audio_visual_crowd_counting_backbone_stage2.ipynb", 
+		"code": "https://gitlab.au.dk/maleci/sl_vit", 
+		"val_accuracy": 0,
+		"loss": 0,
+		"training_epochs": 1
+	},
+	"type": "MLModel"
+}
+

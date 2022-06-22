@@ -1,5 +1,8 @@
 import threading
 import copy
+import os
+import json
+import pickle
 from collections import defaultdict
 from pprint import pprint
 from time import sleep
@@ -28,6 +31,29 @@ from flwr.server.strategy import Strategy
 
 client_statuses = defaultdict(list)
 
+USE_MODEL_REPO = os.environ["USE_MODEL_REPO"] == "enable" if "USE_MODEL_REPO" in os.environ else False
+model_repo = None
+
+if USE_MODEL_REPO:
+    from minio import Minio
+    from minio.error import S3Error
+
+    model_repo = Minio(
+        "minio-minio.marvel-platform.eu",
+        access_key="minio",
+        secret_key="MARVELminio!!@@",
+    )
+
+def save_to_model_repo(model):
+    filename = "avcc-heatmap-fedl-full_tensorflow-v1.pt"
+    # filename_json = "avcc-heatmap-fedl-full_tensorflow-v1.json"
+    # base_json = json.load(open("base_json.json", "r"))
+    # base_json["version"] = 1
+    pickle.dump(model, open(filename, "wb"))
+    dest_bucket = 'fedl'
+    model_repo.put_object(dest_bucket, filename, filename)
+    # model_repo.put_object(dest_bucket, filename_json, filename)
+    
 
 def poll_clients(client_manager: ClientManager):
     while True:
@@ -244,20 +270,6 @@ class NUS(Strategy):
             c_i = (k_i**2) * (fit_res.metrics["gradient_norm"] ** 2) + (
                 k_i * sigma_i**2
             )
-            # TODO: ako klijent nije poslao ni metriku uzmemo stari c i: c_i, d_t =  c_i * (1 + alfa * d_t)
-            # TODO: d_t je broj iteracija koje su prosle od prethodnog javljanja
-            # Za sada flwr ceka sve klijente
-
-            # TODO: pustiti 20 epoha i manji LR, probati možda emnist ili fmnist
-            # uradjeno sve osim emnist za nus, treba sad za fedavg, srediti google sheet
-
-
-            # TODO: razmisliti o podeli podataka na nejednake delove i o veštačkom usporavanju nekih klijenata
-            # dodata nejednaka podela, vec imamo context switching u testovima
-            # TODO: parametar (training time)
-            # dodato
-            # TODO: dodati metriku validacija na lokalnom validacionom skupu pre treninga (kod klijenta)
-            # dodato
             c[client] = np.sqrt(c_i)  # only save square roots of c_i values
 
         # sort c_i values in descending order
@@ -305,6 +317,8 @@ class NUS(Strategy):
             return None, {}
         else:
             ret = weights_to_parameters(aggregate(weights_results))
+            if model_repo:
+                save_to_model_repo(ret)
             return ret, {}
 
     def aggregate_evaluate(

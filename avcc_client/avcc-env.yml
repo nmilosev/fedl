@@ -2,6 +2,7 @@ name: avcc
 channels:
   - conda-forge
   - defaults
+  - pytorch
 dependencies:
   - _libgcc_mutex=0.1=main
   - _openmp_mutex=4.5=1_gnu
@@ -155,6 +156,7 @@ dependencies:
   - markupsafe=2.0.1=py39h27cfd23_0
   - matplotlib-base=3.5.0=py39h3ed280b_0
   - matplotlib-inline=0.1.2=pyhd3eb1b0_2
+  - minio=7.1.7
   - mistune=0.8.4=py39h27cfd23_1000
   - mkl=2021.4.0=h06a4308_640
   - mkl-service=2.4.0=py39h7f8727e_0
@@ -243,6 +245,8 @@ dependencies:
   - tifffile=2021.7.2=pyhd3eb1b0_2
   - tk=8.6.11=h1ccaba5_0
   - toolz=0.11.2=pyhd3eb1b0_0
+  - pytorch=1.11.0
+  - torchvision=0.12.0
   - tornado=6.1=py39h27cfd23_0
   - traitlets=5.1.1=pyhd3eb1b0_0
   - typing-extensions=3.10.0.2=hd3eb1b0_0
