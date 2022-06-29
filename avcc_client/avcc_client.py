@@ -22,6 +22,7 @@ import scipy.io
 import scipy.stats as st
 import sys
 import time
+import timeit
 import tensorflow_addons as tfa
 from scipy import signal
 from skimage.transform import resize
@@ -442,20 +443,46 @@ class AVCCClient(fl.client.NumPyClient):
             0
         )  # 0 epochs, only to init model
 
+    def get_model_gradient_norm(self, data):
+        x_tensor = tf.convert_to_tensor(data, dtype=tf.float32)
+        with tf.GradientTape() as t:
+            t.watch(x_tensor)
+            output = self.model(x_tensor)
+
+        result = output
+        gradients = t.gradient(output, x_tensor)
+        return tf.sum(tf.norm(gradients, ord=2)) ** 0.5
+
     def get_parameters(self):
         return self.model.get_weights()
 
     def fit(self, parameters, config):
         self.model.set_weights(parameters)
+        fit_begin = timeit.default_timer()
         self.model = train_backbone(
             EPOCHS 
         )
-        return self.model.get_weights(), len(self.train_sequence), {}
+        fit_duration = timeit.default_timer() - fit_begin
+        return fl.common.FitRes(
+            parameters=self.model.get_weights(),
+            num_examples=len(self.train_sequence),
+            num_examples_ceil=len(self.train_sequence),
+            fit_duration=fit_duration,
+            metrics={
+                "batch_size": self.train_sequence.batch_size,
+                "gradient_norm": self.get_model_gradient_norm(self.train_sequence),
+                "training_time": fit_duration,
+            },
+        )
 
     def evaluate(self, parameters, config):
         self.model.set_weights(parameters)
         loss, accuracy = self.model.evaluate(self.test_sequence)
-        return loss, len(self.test_sequence), {"accuracy": accuracy}
+        return fl.common.EvaluateRes(
+            loss=float(loss),
+            num_examples=len(self.test_sequence),
+            accuracy=float(accuracy),
+        )
 
 
 if __name__ == "__main__":
