@@ -443,18 +443,23 @@ class AVCCClient(fl.client.NumPyClient):
             0
         )  # 0 epochs, only to init model
 
+    # data is train_sequence
     def get_model_gradient_norm(self, data):
-        x_tensor = tf.convert_to_tensor(data, dtype=tf.float32)
-        with tf.GradientTape() as t:
-            t.watch(x_tensor)
-            output = self.model(x_tensor)
 
-        result = output
-        gradients = t.gradient(output, x_tensor)
-        return tf.sum(tf.norm(gradients, ord=2)) ** 0.5
+        gradients = []
+        for d in data:
+            input_s, input_i = tf.constant(d[0][0]), tf.constant(d[0][1]) 
+            with tf.GradientTape() as t:
+                t.watch([input_s, input_i])
+                output = self.model((input_s, input_i))
+
+            gradients.append(t.gradient(output, [input_s, input_i]))
+
+        return tf.reduce_mean([tf.norm(gradient1, ord=2) ** 0.5 + tf.norm(gradient2, ord=2) ** 0.5 for gradient1, gradient2 in gradients]) 
+
 
     def get_parameters(self):
-        return self.model.get_weights()
+        return model.get_weights()
 
     def fit(self, parameters, config):
         self.model.set_weights(parameters)
@@ -464,7 +469,7 @@ class AVCCClient(fl.client.NumPyClient):
         )
         fit_duration = timeit.default_timer() - fit_begin
         return fl.common.FitRes(
-            parameters=self.model.get_weights(),
+            parameters=self.get_weights(),
             num_examples=len(self.train_sequence),
             num_examples_ceil=len(self.train_sequence),
             fit_duration=fit_duration,
@@ -519,8 +524,9 @@ if __name__ == "__main__":
             print("Number of devices: {}".format(NUM_GPUS))
         else:
             print("Not using CUDA because of USE_GPUS parameter!")
-        
-        fl.client.start_numpy_client(os.environ["FEDL_SERVER"], client=AVCCClient())
+        client = AVCCClient()
+        client.get_model_gradient_norm(client.val_sequence)
+        fl.client.start_numpy_client(os.environ["FEDL_SERVER"], client=client)
     except Exception as e:
         print(e)
         print(traceback.format_exc())
