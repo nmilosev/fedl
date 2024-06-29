@@ -1,6 +1,8 @@
 FedL (Marvel)
 ======
 
+The research leading to these results has received funding from the European Union’s Horizon 2020
+research and innovation programme under grant agreement No 957337.
 
 # Requirements
 
